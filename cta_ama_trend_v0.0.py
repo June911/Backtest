@@ -137,8 +137,7 @@ output_file(os.path.join(result_path, f"{file_name}.html"), title=file_name)
 p0 = plot_market(df, portf.signal_start, portf.signal_end, portf.signals)
 p0.line(x=df.index, y=fast_ma, line_width=3, color=BLUE)
 p0.line(x=df.index, y=slow_ma, line_width=3, color=ORANGE)
-# ama = f_adaptive_moving_average(df.close, 25)
-# p0.line(x=df.index, y=ama, line_width=2, color=BLUE)
+
 
 # 收益曲线
 p3 = plot_performance(portf.portfolio_wealth)

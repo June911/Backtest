@@ -50,8 +50,7 @@ rsiLen = 10
 其他参数
 """
 # 手续费
-# transaction_cost = 0.04 * 0.02
-# transaction_cost = 0.04 * 0.02
+
 transaction_cost = 0
 #
 contract = "BNBUSDT"
@@ -71,8 +70,6 @@ file_data_name = contract + "_" + "binance_spot" + "_" + str(st_year) + ".csv"
 df = get_data(file_data_name, from_database=False)
 df.dropna(inplace=True)
 
-# df = df.loc[pd.to_datetime("2021/06/01 8:00"):pd.to_datetime("2021/07/05 8:00"), :]
-
 # 转换K线
 df_5min = f_change_barperiod(df, freq_perf)
 df = f_change_barperiod(df, freq)
@@ -83,24 +80,9 @@ df_5min_avg_price_open = df_5min_avg_price_open.loc[df_5min_avg_price_open.index
 
 
 ############################## 指标计算 #####################################
-# fast_ma = f_ema(df.close, FastMALen)
-# slow_ma = f_ema(df.close, SlowMALen)
+
 fast_ma = ta.EMA(df.close, FastMALen)
 slow_ma = ta.EMA(df.close, SlowMALen)
-# dif = fast_ma - slow_ma
-# dif.index = dif.index - pd.DateOffset(hours=8)
-# import talib as ta
-# x = f_get_rsi(df.close, rsiLen)
-# y = ta.RSI(df.close, timeperiod=rsiLen)
-
-
-
-# cross_ma = fast_ma - slow_ma
-# plt.figure()
-# df_close.plot()
-# fast_ma.plot()
-# slow_ma.plot()
-# cross_ma.plot()
 
 ############################## 开平条件 #####################################
 
@@ -125,20 +107,12 @@ signals = processing_signal_withstop(con_open_long, con_open_short, con_close_lo
                                      set_stoploss=False, set_stopprofit=False, stop_loss=0.5, stop_profit=1,
                                      reverse_trading=True)
 
-# signals = signals[((signals>0) & (signals.shift(1)<=0)) | ((signals<0) & (signals.shift(1)>=0))]
-# signals.index = signals.index - pd.DateOffset(hours=8)
-# signals.index = signals.index.tz_convert(None)
-# signals.index = signals.index.astype(str)
-# signals.to_excel("sig.xlsx")
-
 
 # 获取收益和其他绩效
 # current close 触发信号， next open 成交
 # multiplication or accumulation
 portf = portfolio(signals, df_5min_avg_price_open, transaction_cost, 1, deal_type="next_open", return_type="multiplication")
-# portf.portfolio_wealth - 1
-# aaa = portf.portfolio_wealth
-# (portf.final_wealth - portf.initial_wealth) portf.n_days
+
 
 df_performance = pd.DataFrame(index=[file_name])
 df_performance["年化收益"] =  portf.f_AnnualReturn()
@@ -151,7 +125,6 @@ df_performance["单笔净利"]  = portf.f_AvgProfitPerTranscation()
 df_performance["胜率"]  = portf.f_WinningRatio()
 
 df_performance = df_performance.round(2)
-# df_performance.round(2).to_excel(os.getcwd() + "/results" + "/" + file_name + ".xlsx")
 
 print("-"*80)
 print("年化收益, ", df_performance["年化收益"].values[0])
